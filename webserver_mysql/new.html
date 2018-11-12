@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new </title>
+</head>
+<body>
+<main class="flex flex-column min-vh-100">
+    <header class="w-100">
+        <div class="w-30 dib bg-washed-blue">
+            <h1><a>Add new records</a></h1>
+        </div>
+    </header>
+        <div class="pv4 pv2-ns ph2 bg-light-gray tc w-30-ns">
+            <div>
+                <a href="/" class="pv2 ph4 f6 fw3 fw6-ns hover-blue link pointer black-80 db">Home</a>
+            </div>
+        </div>
+        <div class="pv4 pv2-ns ph2 bg-light-gray w-70-ns">
+            <div class="tc">
+                <h2>New Name and City</h2>
+                <form method="POST" action="insert">
+                    <label> Name </label><input type="text" name="name" /><br />
+                    <label> Dept </label><input type="text" name="dept" /><br />
+                    <label> City </label><input type="text" name="city" /><br />
+                    <label> Sal  </label><input type="text" name="sal"  /><br />
+                    <input  type="submit" value="Save user" />
+                </form>
+            </div>
+        </div>
+</main>
+</body>
+</html>
