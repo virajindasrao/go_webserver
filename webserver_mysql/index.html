@@ -4,9 +4,9 @@
 <body>
 <main>
     <header>
-        <div> <h1><a>CRUD</a></h1> </div>
-        <a href="/">HOME</a> | <a href="/new">NEW</a>
-        <div> <span><h2>crud operations</h2></span> </div>
+        <div> <h1 style="background: lightgrey"><a>CRUD</a></h1> </div>
+        <a href="/">HOME</a>
+        <div> <span><h2 style="background: darkseagreen">crud operations</h2></span> </div>
     </header>
         <div>
             <table border="1" >
@@ -18,6 +18,7 @@
                     <th scope="col">City</th>
                     <th scope="col">Sal</th>
                     <th scope="col">View</th>
+                    <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
                 </thead>
@@ -30,11 +31,15 @@
                         <td>{{ .City }}</td>
                         <td>{{ .Sal }}</td>
                         <td><a href="/show?id={{ .Id }}">View</a></td>
+                        <td><a href="/edit?id={{ .Id }}">Update</a></td>
                         <td><a href="/delete?id={{ .Id }}">Delete</a><td>
                     </tr>
                 {{ end }}
                 </tbody>
             </table>
+            <br>
+            <h3 style="background: aliceblue">Click here for new entry:- </h3>
+            <a href="/new">New Entry</a>
         </div>
 </main>
 </body>

@@ -27,6 +27,7 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
+var tmpl = template.Must(template.ParseGlob("temp/*"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
@@ -50,6 +51,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		emp.Sal = sal
 		res = append(res, emp)
 	}
+	//tmpl.ExecuteTemplate(w, "Index", res)
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, res)
 	defer db.Close()
@@ -76,11 +78,14 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		emp.City = city
 		emp.Sal = sal
 	}
-	tmpl.ExecuteTemplate(w, "Show", emp)
+	//tmpl.ExecuteTemplate(w, "Show", emp)
+	t, _ := template.ParseFiles("show.html")
+	t.Execute(w, emp)
 	defer db.Close()
 }
 
 func New(w http.ResponseWriter, r *http.Request) {
+	//tmpl.ExecuteTemplate(w, "New", nil)
 	t, _ := template.ParseFiles("new.html")
 	t.Execute(w, nil)
 }
@@ -97,6 +102,52 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		insForm.Exec(name, dept, city, sal)
+		log.Println("INSERT: Name: " + name + " | Dept: " + dept + " | City: " + city + " | Sal: " + sal)
+	}
+	defer db.Close()
+	http.Redirect(w, r, "/", 301)
+}
+
+func Edit(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	nId := r.URL.Query().Get("id")
+	selDB, err := db.Query("SELECT * FROM employee WHERE id=?", nId)
+	if err != nil {
+		panic(err.Error())
+	}
+	emp := Employee{}
+	for selDB.Next() {
+		var id, sal int
+		var name, city, dept string
+		err = selDB.Scan(&id, &name, &dept, &city, &sal)
+		if err != nil {
+			panic(err.Error())
+		}
+		emp.Id = id
+		emp.Name = name
+		emp.Dept = dept
+		emp.City = city
+		emp.Sal = sal
+	}
+	//tmpl.ExecuteTemplate(w, "Edit", emp)
+	t, _ := template.ParseFiles("update.html")
+	t.Execute(w, emp)
+	defer db.Close()
+}
+
+func Update(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	if r.Method == "POST" {
+		name := r.FormValue("name")
+		dept := r.FormValue("dept")
+		city := r.FormValue("city")
+		sal := r.FormValue("sal")
+		id := r.FormValue("uid")
+		insForm, err := db.Prepare("UPDATE employee SET name=?, dept=?, city=?, sal=? WHERE id=?")
+		if err != nil {
+			panic(err.Error())
+		}
+		insForm.Exec(name, dept, city, sal, id)
 		log.Println("INSERT: Name: " + name + " | Dept: " + dept + " | City: " + city + " | Sal: " + sal)
 	}
 	defer db.Close()
@@ -122,6 +173,8 @@ func main() {
 	http.HandleFunc("/show", Show)
 	http.HandleFunc("/new", New)
 	http.HandleFunc("/insert", Insert)
+	http.HandleFunc("/edit", Edit)
+	http.HandleFunc("/update", Update)
 	http.HandleFunc("/delete", Delete)
 	http.ListenAndServe(":8080", nil)
 }
