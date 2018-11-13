@@ -27,7 +27,6 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
-var tmpl = template.Must(template.ParseGlob("temp/*"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
@@ -51,7 +50,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		emp.Sal = sal
 		res = append(res, emp)
 	}
-	//tmpl.ExecuteTemplate(w, "Index", res)
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, res)
 	defer db.Close()
@@ -83,7 +81,6 @@ func Show(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(w http.ResponseWriter, r *http.Request) {
-	//tmpl.ExecuteTemplate(w, "New", nil)
 	t, _ := template.ParseFiles("new.html")
 	t.Execute(w, nil)
 }
